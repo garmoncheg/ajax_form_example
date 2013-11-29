@@ -1,0 +1,1 @@
+# This file is required due to Django need to know this is an app.

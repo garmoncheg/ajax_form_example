@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<head>
+    <title>Contact</title>
+    <script type="text/javascript"
+        src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js">
+    </script>
+    <script type="text/javascript"
+        src="http://malsup.github.com/min/jquery.form.min.js">
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            function block_form() {
+                $("#loading").show();
+                $('textarea').attr('disabled', 'disabled');
+                $('input').attr('disabled', 'disabled');
+            }
+
+            function unblock_form() {
+                $('#loading').hide();
+                $('textarea').removeAttr('disabled');
+                $('input').removeAttr('disabled');
+                $('.errorlist').remove();
+            }
+
+            // prepare Options Object for plugin
+            var options = {
+                beforeSubmit: function(form, options) {
+                    // return false to cancel submit
+                    block_form();
+                },
+                success: function() {
+                    unblock_form();
+                    $("#form_ajax").show();
+                    setTimeout(function() {
+                        $("#form_ajax").hide();
+                    }, 5000);
+                },
+                error:  function(resp) {
+                    unblock_form();
+                    $("#form_ajax_error").show();
+                    // render errors in form fields
+                    var errors = JSON.parse(resp.responseText);
+                    for (error in errors) {
+                        var id = '#id_' + error;
+                        $(id).parent('p').prepend(errors[error]);
+                    }
+                    setTimeout(function() {
+                        $("#form_ajax_error").hide();
+                    }, 5000);
+                }
+            };
+
+            $('#ajaxform').ajaxForm(options);
+        });
+    </script>
+    <style>
+        #form_ajax_error, .errorlist {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Contact</h1>
+    <form id="ajaxform" action="{% url contact_form %}" method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {{ form.as_p }}
+        <div id="loading" style="display:none;">
+            <span id="load_text">loading...</span>
+        </div>
+        <div id="form_ajax" style="display:none;">
+            <span>Form submit successfully.</span>
+        </div>
+        <div id="form_ajax_error" style="display:none;">
+            <span>Can not submit data due to errors.</span>
+        </div>
+        <p id="sendwrapper"><input type="submit" value="Send" id="sendbutton"/></p>
+    </form>
+</body>
+</html>
