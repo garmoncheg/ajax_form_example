@@ -1,5 +1,5 @@
-AJAX Form Example
-=================
+Django AJAX Form Example
+========================
 
 AJAX added to django contact form, using jQuery forms plugin.
 
