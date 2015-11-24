@@ -61,7 +61,7 @@
 </head>
 <body>
     <h1>Contact</h1>
-    <form id="ajaxform" action="{% url contact_form %}" method="post">
+    <form id="ajaxform" action="{% url 'contact_form' %}" method="post">
         {% csrf_token %}
         {{ form.non_field_errors }}
         {{ form.as_p }}
